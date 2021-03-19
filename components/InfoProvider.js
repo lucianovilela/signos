@@ -59,7 +59,7 @@ const AuthProvider = ({ children }) => {
     if(!user) return;
     console.log("onChangeUser", user);
     const token = await  user.getIdToken();
-    const serverUser = await fetch(`http://10.0.0.102:3000/api/user/validate?email=${user.email}`,{
+    const serverUser = await fetch(`https://portaoeletronico.herokuapp.com/api/user/validate?email=${user.email}`,{
       method:"GET",
       headers : new Headers({'token':token})
     }).then(result => result.json());

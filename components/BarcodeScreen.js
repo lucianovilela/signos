@@ -48,7 +48,7 @@ function Barcode({ scanned, setScanned }) {
       const token = await authContext.state.user.getIdToken();
       setScanned(true);
       authContext.action.fechingURL(
-        `http://10.0.0.102:3000/api/portao/abre/${obj._id}?key=${obj.key}&email=${authContext.state.user.email}`,
+        `https://portaoeletronico.herokuapp.com/api/portao/abre/${obj._id}?key=${obj.key}&email=${authContext.state.user.email}`,
         token
       );
     })();
