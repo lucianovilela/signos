@@ -5,8 +5,8 @@ import { View } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
 import ContextAuth from "./InfoProvider";
-import BarcodeScreen from "./BarcodeScreen";
 import LoginScreen from "./LoginScreen";
+import SignoScreen from "./SignoScreen";
 
 import style from "./AppStyle";
 
@@ -21,15 +21,12 @@ function HomeScreen({ navigation, route }) {
 
   return (
     <View style={style.container}>
-      {authContext.state.isSignout ? (
-        <LoginScreen />
-      ) : (
         <Tab.Navigator>
           <Tab.Screen
-            name="BarCode"
-            component={BarcodeScreen}
+            name="Signo"
+            component={SignoScreen}
             options={{
-              title: "Barcode",
+              title: "Signo",
             }}
           />
 
@@ -41,7 +38,6 @@ function HomeScreen({ navigation, route }) {
             }}
           />
         </Tab.Navigator>
-      )}
     </View>
   );
 }
