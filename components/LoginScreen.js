@@ -1,10 +1,10 @@
 import * as React from "react";
 import { useState, useEffect, useContext } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, Alert } from "react-native";
 import Constants from "expo-constants";
 import style from "./AppStyle";
 import Icon from "react-native-vector-icons/FontAwesome";
-import { Input, Button, SocialIcon, Divider } from "react-native-elements";
+import { Input, Button, SocialIcon, Divider, Avatar, Image } from "react-native-elements";
 
 import ContextAuth from "./InfoProvider";
 
@@ -41,7 +41,7 @@ function LoginScreen({ navigation }) {
   const [info, setInfo] = useState({ email: undefined, password: undefined });
   return (
     <View style={style.container}>
-      <View style={{ alignContent: "center" }}>
+      <View style={{alignItems:'center', justifyContent:'center'}}>
         <Text>{authContext.state?.user?.email}</Text>
         <Text>{authContext.state.isSignout}</Text>
       </View>

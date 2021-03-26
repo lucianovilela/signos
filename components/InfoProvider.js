@@ -1,6 +1,7 @@
 import React, { createContext } from "react";
 const ContextAuth = createContext();
 import * as firebase from "firebase";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default ContextAuth;
 const AuthProvider = ({ children }) => {
@@ -38,12 +39,17 @@ const AuthProvider = ({ children }) => {
           
         case "FETCHING_URL_END":
           console.log("FETCHING_URL_END", action);
+          AsyncStorage.setItem(action.payload.info?.name, JSON.stringify(action.payload));
           return {
             ...prevState,
             isLoading:false,
             info:action.payload
           };
-  
+        case "LOAD_LIST":
+          return {
+            ...prevState,
+            lista:action.payload
+          };
       }
     },
     {
@@ -51,7 +57,8 @@ const AuthProvider = ({ children }) => {
       isSignout: true,
       user: {},
       userToken: null,
-      info:{}
+      info:undefined, 
+      lista:[]
     }
   );
 
@@ -76,6 +83,21 @@ const AuthProvider = ({ children }) => {
       firebase.auth().onAuthStateChanged(listenerUser);
     };
     bootstrapAsync();
+    (async () => {
+      const lista = [];
+      const keys = await AsyncStorage.getAllKeys();
+      for (let key of keys) {
+        const item = await AsyncStorage.getItem(key);
+        try {
+          lista.push(JSON.parse(item));
+
+        } catch (error) {
+
+        }
+      }
+      dispatch({type:"LOAD_LIST", payload:lista})
+    })();
+
   }, []);
 
   const action = React.useMemo(() => ({
@@ -110,7 +132,7 @@ const AuthProvider = ({ children }) => {
       .then(result=> dispatch({ type: "FETCHING_URL_END", payload:result }))
     },
 
-   
+    
   }));
   return (
     <ContextAuth.Provider value={{ action, state }}>

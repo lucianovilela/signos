@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "portao_eletronico",
-    "slug": "portao_eletronico",
+    "name": "signos",
+    "slug": "signos",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
