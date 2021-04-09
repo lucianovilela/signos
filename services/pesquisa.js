@@ -1,25 +1,11 @@
 const moment = require("moment");
-const wiki =require('wikijs').default;
+const wiki = require('wikijs').default;
 
-const SIGNOS = [
-  { signo: "Aquário", meses: [1, 2], dias: [20, 18], name:'aquarius' },
-  { signo: "Peixes", meses: [2, 3], dias: [19, 20], name:'pisces' },
-  { signo: "Áries", meses: [3, 4], dias: [21, 19], name:'aries' },
-  { signo: "Touro", meses: [4, 5], dias: [20, 20], name:'taurus' },
-  { signo: "Gêmeos", meses: [5, 6], dias: [21, 21], name:'gemini'  },
-  { signo: "Câncer", meses: [6, 7], dias: [22, 22], name:'cencer' },
-  { signo: "Leão", meses: [7, 8], dias: [23, 22], name:'leo' },
-  { signo: "Virgem", meses: [8, 9], dias: [23, 22],  name:'virgo' },
-  { signo: "Libra", meses: [9, 10], dias: [23, 22], name:'libra' },
-  { signo: "Escorpião", meses: [10, 11], dias: [23, 21], name:'scorpio' },
-  { signo: "Sagitário", meses: [11, 12], dias: [22, 21], name:'sagittarius' },
-  { signo: "Capricórnio", meses: [12, 12], dias: [19, 31], name:'capricornus' },
-  { signo: "Capricórnio", meses: [1, 1], dias: [1, 19], name:'capricornus' },
-];
+const SIGNOS = newFunction();
 
 const getSigno = (dt) => {
-    const dataNascimento = moment(dt);
-    console.log("signo", dataNascimento);
+  const dataNascimento = moment(dt);
+  console.log("signo", dataNascimento);
   for (const o of SIGNOS) {
     dia = (dataNascimento.month() + 1) * 100 + dataNascimento.date();
     if (
@@ -31,6 +17,24 @@ const getSigno = (dt) => {
   }
 };
 
+
+function newFunction() {
+  return [
+    { signo: "Aquário", meses: [1, 2], dias: [20, 18], name: 'aquarius', image: require('../assets/signos/aquarius.png') },
+    { signo: "Peixes", meses: [2, 3], dias: [19, 20], name: 'pisces', image: require('../assets/signos/pisces.png') },
+    { signo: "Áries", meses: [3, 4], dias: [21, 19], name: 'aries', image: require('../assets/signos/aries.png') },
+    { signo: "Touro", meses: [4, 5], dias: [20, 20], name: 'taurus', image: require('../assets/signos/taurus.png') },
+    { signo: "Gêmeos", meses: [5, 6], dias: [21, 21], name: 'gemini', image: require('../assets/signos/gemini.png') },
+    { signo: "Câncer", meses: [6, 7], dias: [22, 22], name: 'cancer', image: require('../assets/signos/cancer.png') },
+    { signo: "Leão", meses: [7, 8], dias: [23, 22], name: 'leo', image: require('../assets/signos/leo.png') },
+    { signo: "Virgem", meses: [8, 9], dias: [23, 22], name: 'virgo', image: require('../assets/signos/virgo.png') },
+    { signo: "Libra", meses: [9, 10], dias: [23, 22], name: 'libra', image: require('../assets/signos/libra.png') },
+    { signo: "Escorpião", meses: [10, 11], dias: [23, 21], name: 'scorpio', image: require('../assets/signos/scorpio.png') },
+    { signo: "Sagitário", meses: [11, 12], dias: [22, 21], name: 'sagittarius', image: require('../assets/signos/sagittarius.png') },
+    { signo: "Capricórnio", meses: [12, 12], dias: [19, 31], name: 'capricornus', image: require('../assets/signos/capricornus.png') },
+    { signo: "Capricórnio", meses: [1, 1], dias: [1, 19], name: 'capricornus', image: require('../assets/signos/capricornus.png') },
+  ];
+}
 
 function retira_acentos(str) {
   let com_acento =
@@ -58,16 +62,16 @@ function retira_acentos(str) {
 
 const sanitize = (nome) => {
   return retira_acentos(
-      nome
+    nome
       .trim()
       .toLowerCase()
       .replace(/\s+/gim, " "));
 }
 
-const consultaWiki=async (nome)=>{
-     return( await wiki().find(nome)
-    .then(async page => ({'info':await page.info(), 'imagem':await page.mainImage(), 'url':page.url()}) )
-    .catch(e=>JSON.stringify(e)));
+const consultaWiki = async (nome) => {
+  return (await wiki().find(nome)
+    .then(async page => ({ 'info': await page.info(), 'imagem': await page.mainImage(), 'url': page.url() }))
+    .catch(e => JSON.stringify(e)));
 
 }
 
@@ -81,9 +85,9 @@ const pesquisa = async (_nome) => {
   try {
     var signo = undefined;
     if (resp.info?.birthDate?.date) {
-      signo =  getSigno(new Date(resp.info?.birthDate?.date));
+      signo = getSigno(new Date(resp.info?.birthDate?.date));
     }
-    return ( {...resp, signo} );
+    return ({ ...resp, signo });
   } catch (error) {
     return { error: error.message };
   }

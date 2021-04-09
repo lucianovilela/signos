@@ -2,16 +2,14 @@ import * as React from 'react';
 import { useState, useContext } from 'react';
 import moment from 'moment';
 
-import { View, StyleSheet, ActivityIndicator } from 'react-native';
+import { View } from 'react-native';
 import {
-  Input,
   Button,
-  SocialIcon,
   SearchBar,
   Text,
-  Avatar,
   Card,
   Image,
+  ActivityIndicator
 } from 'react-native-elements';
 
 import * as WebBrowser from 'expo-web-browser';
@@ -29,7 +27,7 @@ const InfoPessoal = ({ info }) => (
     <Card.Divider />
     <View style={{ justifyContent: 'center', alignItems: 'center' }}>
       <Card.Title>{info?.info?.fullName || info?.info?.name}</Card.Title>
-      {/*<Image source={ require(`../assets/signos/${info?.signo?.name}.png`) } style={{height:50, width:50}}  />*/}
+      <Image source={ info?.signo?.image } style={{height:50, width:50}}  />
       <Text>{info?.signo?.signo}</Text>
       <Text>{moment(info?.info?.birthDate?.date).format('DD/MM/YYYY')}</Text>
       <Text>{info?.info?.birthDate?.age} Anos </Text>
@@ -48,7 +46,7 @@ function SignoScreen({ navigation, route }) {
   return (
     <View >
       <SearchBar onChangeText={(text) => setText(text)} value={text} />
-      <Button title="Pesquisar" onPress={getInfo} />
+      <Button title="Buscar" onPress={getInfo} />
       {authContext.state.info && !authContext.state.isLoading
         ?
         <InfoPessoal info={authContext.state.info} /> :
