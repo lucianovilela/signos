@@ -2,7 +2,7 @@ import React, { createContext } from "react";
 const ContextAuth = createContext();
 import * as firebase from "firebase";
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import pesquisa from '../services/pesquisa';
 export default ContextAuth;
 const AuthProvider = ({ children }) => {
   const [state, dispatch] = React.useReducer(
@@ -53,7 +53,7 @@ const AuthProvider = ({ children }) => {
       }
     },
     {
-      isLoading: true,
+      isLoading: false,
       isSignout: true,
       user: {},
       userToken: null,
@@ -66,11 +66,6 @@ const AuthProvider = ({ children }) => {
     if(!user) return;
     console.log("onChangeUser", user);
     const token = await  user.getIdToken();
-    const serverUser = await fetch(`https://portaoeletronico.herokuapp.com/api/user/validate?email=${user.email}`,{
-      method:"GET",
-      headers : new Headers({'token':token})
-    }).then(result => result.json());
-    console.log("onChangeUser", serverUser)
     if (user) {
       dispatch({ type: "SIGN_IN", user: user });
     }
@@ -121,14 +116,13 @@ const AuthProvider = ({ children }) => {
       return firebase
         .auth()
         .createUserWithEmailAndPassword(email, password)
-        .then(async (result) =>
+        .then( (result) =>
           dispatch({ type: "SIGN_IN", user: result.user })
         );
     },
     fechingURL: async ( url, token ) => {
       dispatch({ type: "FETCHING_URL_START" })
-      fetch(url, { method:"GET", headers:new Headers({"token":token})})
-      .then(result=>result.json())
+      pesquisa(url)
       .then(result=> dispatch({ type: "FETCHING_URL_END", payload:result }))
     },
 
