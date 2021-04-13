@@ -16,23 +16,25 @@ import {
 
 import ContextAuth from "./InfoProvider";
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { auth } from 'firebase';
 
 function ListScreen({ navigation, route }) {
   const authContext = useContext(ContextAuth);
 
   const [text, setText] = useState('');
-  const [listaFull, setListFull] = useState([]);
   const [list, setList] = useState([]);
 
   useEffect(() => {
-    setList(authContext.state.lista);
+    (async()=>{
+        await authContext.action.loadList();
+        setList(authContext.state.lista);
+    })();
 
   }, []);
 
   const onChangeText=(text)=>{
     const lista = authContext.state.lista.filter((item)=>{
       try {
-        console.log(item.info?.name?.toLowerCase(), text.toLowerCase(), item.info?.name?.toLowerCase().contains(text.toLowerCase()));
         return item.info?.name?.toLowerCase().contains(text.toLowerCase());
       } catch (error) {
         return false;
@@ -47,7 +49,7 @@ function ListScreen({ navigation, route }) {
       <SearchBar onChangeText={onChangeText } value={text} />
       <View >
         <FlatList
-          data={list}
+          data={authContext.state.lista}
           renderItem={({item, index})=>(
           <ListItem key={index} bottomDivider>
               <Avatar source={{ uri: item.imagem }} />

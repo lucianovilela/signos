@@ -2,7 +2,7 @@ import React, { createContext } from "react";
 const ContextAuth = createContext();
 import * as firebase from "firebase";
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import pesquisa from '../services/pesquisa';
+import { pesquisa } from '../services/pesquisa';
 export default ContextAuth;
 const AuthProvider = ({ children }) => {
   const [state, dispatch] = React.useReducer(
@@ -33,22 +33,25 @@ const AuthProvider = ({ children }) => {
           console.log("FETCHING_URL_START", action);
           return {
             ...prevState,
-            isLoading:true,
-            info:{}
+            isLoading: true,
+            info: undefined
           };
-          
+
         case "FETCHING_URL_END":
           console.log("FETCHING_URL_END", action);
-          AsyncStorage.setItem(action.payload.info?.name, JSON.stringify(action.payload));
+          if (action.payload.signo) {
+            AsyncStorage.setItem(action.payload.info?.name, JSON.stringify(action.payload));
+          }
           return {
             ...prevState,
-            isLoading:false,
-            info:action.payload
-          };
+            isLoading: false,
+            info: action.payload
+          }
+          
         case "LOAD_LIST":
           return {
             ...prevState,
-            lista:action.payload
+            lista: action.payload
           };
       }
     },
@@ -57,20 +60,21 @@ const AuthProvider = ({ children }) => {
       isSignout: true,
       user: {},
       userToken: null,
-      info:undefined, 
-      lista:[]
+      info: undefined,
+      lista: []
     }
   );
 
   const listenerUser = async (user) => {
-    if(!user) return;
+    if (!user) return;
     console.log("onChangeUser", user);
-    const token = await  user.getIdToken();
+    const token = await user.getIdToken();
     if (user) {
       dispatch({ type: "SIGN_IN", user: user });
     }
   };
 
+  /*
   React.useEffect(() => {
     // Fetch the token from storage then navigate to our appropriate place
     console.log("setting onChangeUser");
@@ -78,22 +82,9 @@ const AuthProvider = ({ children }) => {
       firebase.auth().onAuthStateChanged(listenerUser);
     };
     bootstrapAsync();
-    (async () => {
-      const lista = [];
-      const keys = await AsyncStorage.getAllKeys();
-      for (let key of keys) {
-        const item = await AsyncStorage.getItem(key);
-        try {
-          lista.push(JSON.parse(item));
-
-        } catch (error) {
-
-        }
-      }
-      dispatch({type:"LOAD_LIST", payload:lista})
-    })();
-
   }, []);
+  */
+
 
   const action = React.useMemo(() => ({
     signIn: async ({ email, password }) => {
@@ -116,17 +107,30 @@ const AuthProvider = ({ children }) => {
       return firebase
         .auth()
         .createUserWithEmailAndPassword(email, password)
-        .then( (result) =>
+        .then((result) =>
           dispatch({ type: "SIGN_IN", user: result.user })
         );
     },
-    fechingURL: async ( url, token ) => {
+    fechingURL: async (url, token) => {
       dispatch({ type: "FETCHING_URL_START" })
       pesquisa(url)
-      .then(result=> dispatch({ type: "FETCHING_URL_END", payload:result }))
+        .then(result => dispatch({ type: "FETCHING_URL_END", payload: result }))
     },
+    loadList:async () => {
+      const lista = [];
+      const keys = await AsyncStorage.getAllKeys();
+      for (let key of keys) {
+        const item = await AsyncStorage.getItem(key);
+        try {
+          lista.push(JSON.parse(item));
 
-    
+        } catch (error) {
+          console.error(error);
+        }
+      }
+      dispatch({ type: "LOAD_LIST", payload: lista })
+    }
+
   }));
   return (
     <ContextAuth.Provider value={{ action, state }}>

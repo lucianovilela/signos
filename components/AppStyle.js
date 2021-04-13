@@ -15,6 +15,19 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     textAlign: 'center',
   },
+  button: {
+    margin: 10,
+    marginBottom: 0,
+    padding: 10,
+    width: '70%',
+    alignItems: 'center',
+    alignContent: 'center',
+    alignSelf: 'center',
+    fontSize: 20,
+    backgroundColor: '#000055',
+    color: 'white',
+    borderRadius: 8
+  },
 });
 
 export default styles;
