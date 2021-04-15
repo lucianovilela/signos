@@ -2,7 +2,7 @@ import * as React from 'react';
 import { useState, useContext, useEffect } from 'react';
 import moment from 'moment';
 import { sujestao } from '../services/pesquisa'
-import { View, FlatList, ActivityIndicator, TouchableOpacity } from 'react-native';
+import { View, FlatList, ActivityIndicator, TouchableOpacity, Keyboard, TouchableWithoutFeedback } from 'react-native';
 import {
   SearchBar,
   Text,
@@ -11,6 +11,8 @@ import {
   ListItem,
   Icon
 } from 'react-native-elements';
+
+import * as Analytics from 'expo-firebase-analytics';
 
 import * as WebBrowser from 'expo-web-browser';
 import styles from './AppStyle';
@@ -21,6 +23,11 @@ const Stack = createStackNavigator();
 
 
 const InfoPessoal = () => {
+  Analytics.logEvent('page_view', { 
+    page_path: '/info',
+    page_title: 'info'
+});
+
   const authContext = useContext(ContextAuth);
 
   return (
@@ -35,13 +42,15 @@ const InfoPessoal = () => {
           />
           <Card.Divider />
           <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-            <Card.Title>{authContext.state.info?.info?.fullName || authContext.state.info?.info?.name}</Card.Title>
-            <Image source={authContext.state.info?.signo?.image} style={{ height: 50, width: 50 }} />
-            <Text>{authContext.state.info?.signo?.signo}</Text>
-            <Text>{moment(authContext.state.info?.info?.birthDate?.date).format('MMM, DD YYYY')}</Text>
-            <Text>{authContext.state.info?.info?.birthDate?.age} Anos </Text>
-            <TouchableOpacity  style={styles.button} onPress={() => { WebBrowser.openBrowserAsync(authContext.state.info.url) }} >
-              <Text style={{color:"#ffffff"}}>info</Text>
+            <View style={{display:authContext.state.info.signo?'flex': 'none', flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+              <Card.Title>{authContext.state.info?.info?.fullName || authContext.state.info?.info?.name}</Card.Title>
+              <Text>{authContext.state.info?.signo?.signo}</Text>
+              <Image source={authContext.state.info?.signo?.image} style={{ height: 50, width: 50 }} />
+              <Text>{moment(authContext.state.info?.info?.birthDate?.date).format('MMM, DD YYYY')}</Text>
+              <Text>Age {authContext.state.info?.info?.birthDate?.age}</Text>
+            </View>
+            <TouchableOpacity style={styles.button} onPress={() => { WebBrowser.openBrowserAsync(authContext.state.info.url) }} >
+              <Text style={{ color: "#ffffff" }}>info</Text>
             </TouchableOpacity>
           </View>
         </Card>
@@ -82,30 +91,40 @@ const AutoCompleteList = ({ text, setText }) => {
 
 function PaginaBusca({ navigation, route }) {
   const authContext = useContext(ContextAuth);
+  Analytics.logEvent('page_view', { 
+      page_path: '/search',
+      page_title: 'search'
+  }).then(res=>console.log(res))
+  .catch(err=>console.error(err));
 
   const [text, setText] = useState('');
   const getInfo = async () => {
+    Analytics.logEvent('search', { 'search_term':text});
     await authContext.action.fechingURL(text);
     navigation.navigate('result');
   }
   return (
-    <View >
-      <SearchBar onChangeText={(text) => setText(text)} value={text} />
-      <TouchableOpacity style={styles.button} onPress={getInfo}>
-        <Icon
-          name="search"
-          size={20}
-          color="white"
-        />
-        <Text style={{color:"#ffffff"}}>search</Text>
+    //<TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
 
-      </TouchableOpacity>
-      <AutoCompleteList text={text} show={true} setText={setText} />
-    </View>
+      <View >
+        <SearchBar onChangeText={(text) => setText(text)} value={text} />
+        <TouchableOpacity style={styles.button} onPress={getInfo}>
+          <Icon
+            name="search"
+            size={20}
+            color="white"
+          />
+          <Text style={{ color: "#ffffff" }}>search</Text>
+
+        </TouchableOpacity>
+        <AutoCompleteList text={text} show={true} setText={setText} />
+      </View>
+   // </TouchableWithoutFeedback>
   );
 }
 
 function SignoScreen({ }) {
+  
   return (
     <Stack.Navigator initialRouteName="search">
       <Stack.Screen name="search" component={PaginaBusca} />

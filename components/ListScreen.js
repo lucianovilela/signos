@@ -16,7 +16,6 @@ import {
 
 import ContextAuth from "./InfoProvider";
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { auth } from 'firebase';
 
 function ListScreen({ navigation, route }) {
   const authContext = useContext(ContextAuth);

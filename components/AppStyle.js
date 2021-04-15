@@ -20,13 +20,15 @@ const styles = StyleSheet.create({
     marginBottom: 0,
     padding: 10,
     width: '70%',
+    justifyContent:'center',
     alignItems: 'center',
     alignContent: 'center',
     alignSelf: 'center',
     fontSize: 20,
     backgroundColor: '#000055',
     color: 'white',
-    borderRadius: 8
+    borderRadius: 15,
+    flexDirection:'row'
   },
 });
 

@@ -1,6 +1,6 @@
 import React, { createContext } from "react";
 const ContextAuth = createContext();
-import * as firebase from "firebase";
+//import * as firebase from "firebase";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { pesquisa } from '../services/pesquisa';
 export default ContextAuth;
@@ -89,27 +89,28 @@ const AuthProvider = ({ children }) => {
   const action = React.useMemo(() => ({
     signIn: async ({ email, password }) => {
       ///console.log('signIn:', email, password)
-
+/*
       return firebase
         .auth()
         .signInWithEmailAndPassword(email, password)
         .then(async (result) =>
           dispatch({ type: "SIGN_IN", user: result.user })
         );
+        */
     },
     signOut: async () => {
-      return firebase
+      /*return firebase
         .auth()
         .signOut()
-        .then(async () => dispatch({ type: "SIGN_OUT" }));
+        .then(async () => dispatch({ type: "SIGN_OUT" }));*/
     },
     signUp: async ({ email, password }) => {
-      return firebase
+      /*return firebase
         .auth()
         .createUserWithEmailAndPassword(email, password)
         .then((result) =>
           dispatch({ type: "SIGN_IN", user: result.user })
-        );
+        );*/
     },
     fechingURL: async (url, token) => {
       dispatch({ type: "FETCHING_URL_START" })

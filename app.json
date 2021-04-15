@@ -20,6 +20,7 @@
       "supportsTablet": true
     },
     "android": {
+      "googleServicesFile": "./google-services.json",
       "config": {
         "googleMobileAdsAppId": "ca-app-pub-8251793476466194~2332715722"
       },
@@ -27,10 +28,15 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
       },
-      "package": "com.lucianovilela.snack4540bd52d1f6436f9e84fb8c1b62cbdf"
+      "package": "br.com.vilela.signo"
     },
     "web": {
-      "favicon": "./assets/favicon.png"
+      "googleMobileAdsAppId": "ca-app-pub-8251793476466194~2332715722",
+      "favicon": "./assets/favicon.png",
+      "firebase":{
+        "apiKey": "AIzaSyCB2YPjSU2lOhMTgRvjcbMUzxcCCCD_Gn4",
+        "measurementId": "G-BBH4BS7VFD"
+      }
     },
     "description": ""
   }
