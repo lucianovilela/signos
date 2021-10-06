@@ -4,6 +4,7 @@ const ContextAuth = createContext();
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { pesquisa } from '../services/pesquisa';
 export default ContextAuth;
+const LIST_NAME="signo.lista";
 const AuthProvider = ({ children }) => {
   const [state, dispatch] = React.useReducer(
     (prevState, action) => {
@@ -39,13 +40,16 @@ const AuthProvider = ({ children }) => {
 
         case "FETCHING_URL_END":
           console.log("FETCHING_URL_END", action);
+          let listTemp = [ ...prevState.lista ];
           if (action.payload.signo) {
-            AsyncStorage.setItem(action.payload.info?.name, JSON.stringify(action.payload));
+            listTemp = [ ...listTemp, action.payload ];
+            AsyncStorage.setItem(LIST_NAME, JSON.stringify(listTemp));
           }
           return {
             ...prevState,
             isLoading: false,
-            info: action.payload
+            info: action.payload,
+            lista: listTemp
           }
           
         case "LOAD_LIST":
@@ -117,19 +121,16 @@ const AuthProvider = ({ children }) => {
       pesquisa(url)
         .then(result => dispatch({ type: "FETCHING_URL_END", payload: result }))
     },
+    
+    
     loadList:async () => {
-      const lista = [];
-      const keys = await AsyncStorage.getAllKeys();
-      for (let key of keys) {
-        const item = await AsyncStorage.getItem(key);
-        try {
-          lista.push(JSON.parse(item));
+      const item = await AsyncStorage.getItem(LIST_NAME);
+      try {
+        dispatch({ type: "LOAD_LIST", payload: JSON.parse(item) })
 
-        } catch (error) {
-          console.error(error);
-        }
+      } catch (error) {
+        console.error(error);
       }
-      dispatch({ type: "LOAD_LIST", payload: lista })
     }
 
   }));

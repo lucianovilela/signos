@@ -94,11 +94,15 @@ const pesquisa = async (_nome) => {
 };
 
 
-const sujestao = async(_nome)=>{
-    const nome = sanitize(_nome);
-    const list = await wiki().search(nome, 15);
-    return list;
+const sugestao = async (_nome) => {
+  const nome = sanitize(_nome);
+  const list = await wiki().search(`${nome}`, 30, true)
+    .then( list =>
+      list.results.filter(page => page.snippet.toLowerCase().includes("born"))
+        .map(page => page.title));
+  return list;
 
 }
 
-module.exports = { pesquisa, sujestao };
+
+module.exports = { pesquisa, sugestao };

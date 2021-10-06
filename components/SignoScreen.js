@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { useState, useContext, useEffect } from 'react';
 import moment from 'moment';
-import { sujestao } from '../services/pesquisa'
+import { sugestao } from '../services/pesquisa'
 import { View, FlatList, ActivityIndicator, TouchableOpacity, Keyboard, TouchableWithoutFeedback } from 'react-native';
 import {
   SearchBar,
@@ -64,7 +64,7 @@ const AutoCompleteList = ({ text, setText }) => {
   const [list, setList] = useState([]);
   useEffect(() => {
     (async () => {
-      if (text.length > 3) { setList(await sujestao(text)) }
+      if (text.length > 3) { setList(await sugestao(text)) }
       else {
         setList([])
       }
@@ -107,7 +107,7 @@ function PaginaBusca({ navigation, route }) {
     //<TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
 
       <View >
-        <SearchBar onChangeText={(text) => setText(text)} value={text} />
+        <SearchBar onChangeText={(text) => setText(text)} value={text} inputStyle={{padding:10}} />
         <TouchableOpacity style={styles.button} onPress={getInfo}>
           <Icon
             name="search"

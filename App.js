@@ -5,7 +5,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import HomeScreen from './components/HomeScreen';
 
 import Constants from 'expo-constants';
-import * as firebase from 'firebase';
+import  firebase from 'firebase';
 import firebaseConfig from './firebaseConfig';
 import { AuthProvider } from './components/InfoProvider';
 
