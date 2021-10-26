@@ -78,7 +78,7 @@ const AutoCompleteList = ({ text, setText }) => {
   return (
     <View >
       <FlatList
-        data={list.results}
+        data={list}
         renderItem={
           ({ item }) => (<ListItem onPress={() => onPress(item)}><Text>{item}</Text></ListItem>)
         }

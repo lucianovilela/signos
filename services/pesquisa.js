@@ -96,8 +96,12 @@ const pesquisa = async (_nome) => {
 
 const sugestao = async (_nome) => {
   const nome = sanitize(_nome);
-  const list = await wiki().search(`${nome}`, 30, true)
-    .then( list =>
+  const list = await wiki({
+    headers: {
+      'user-agent':'Mozilla/5.0 (Linux; Android 8.0; Pixel 2 Build/OPD3.170816.012) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/95.0.4638.54 Mobile Safari/537.36'
+    }
+  }).search(`${nome}`, 30, true)
+    .then(list =>
       list.results.filter(page => page.snippet.toLowerCase().includes("born"))
         .map(page => page.title));
   return list;

@@ -26,13 +26,13 @@ function HomeScreen({ navigation, route }) {
   return (
     <ThemeProvider >
       <SafeAreaView style={style.container}>
+        
         <Tab.Navigator>
           <Tab.Screen
             name="signs"
             component={SignoScreen}
             options={{
               title: "signs",
-
               tabBarIcon: () => (<Icon name="search" size={20} />)
             }}
           />
