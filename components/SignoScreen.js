@@ -123,10 +123,10 @@ function PaginaBusca({ navigation, route }) {
   );
 }
 
-function SignoScreen({ }) {
+function SignoScreen({ navigation, route }) {
   
   return (
-    <Stack.Navigator initialRouteName="search">
+    <Stack.Navigator initialRouteName="search" >
       <Stack.Screen name="search" component={PaginaBusca} />
       <Stack.Screen name="result" component={InfoPessoal} />
     </Stack.Navigator>

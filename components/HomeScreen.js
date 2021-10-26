@@ -27,7 +27,7 @@ function HomeScreen({ navigation, route }) {
     <ThemeProvider >
       <SafeAreaView style={style.container}>
         
-        <Tab.Navigator>
+        <Tab.Navigator screenOptions={{headerShown:false}}>
           <Tab.Screen
             name="signs"
             component={SignoScreen}

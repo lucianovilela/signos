@@ -33,7 +33,7 @@
     "web": {
       "googleMobileAdsAppId": "ca-app-pub-8251793476466194~2332715722",
       "favicon": "./assets/favicon.png",
-      "firebase":{
+      "firebase": {
         "apiKey": "AIzaSyCB2YPjSU2lOhMTgRvjcbMUzxcCCCD_Gn4",
         "measurementId": "G-BBH4BS7VFD"
       }
