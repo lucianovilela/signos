@@ -5,7 +5,6 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import HomeScreen from './components/HomeScreen';
 
 import Constants from 'expo-constants';
-import  firebase from 'firebase';
 import firebaseConfig from './firebaseConfig';
 import { AuthProvider } from './components/InfoProvider';
 
@@ -13,10 +12,6 @@ import { AuthProvider } from './components/InfoProvider';
 
 export default function App() {
   
-  if (!firebase.apps.length) {
-    firebase.initializeApp(firebaseConfig);
-
-  }
   
   return (
     <AuthProvider>
