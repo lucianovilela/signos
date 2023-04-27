@@ -1,82 +1,69 @@
-import React, { createContext } from "react";
+import React, { createContext, useContext } from 'react';
 const ContextAuth = createContext();
 //import * as firebase from "firebase";
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { pesquisa } from '../services/pesquisa';
+import { pesquisa, sugestao } from '../services/pesquisa';
 export default ContextAuth;
-const LIST_NAME="signo.lista";
+const LIST_NAME = 'signo.lista';
+
 const AuthProvider = ({ children }) => {
+  let listTemp=[];
   const [state, dispatch] = React.useReducer(
     (prevState, action) => {
       switch (action.type) {
-        case "RESTORE_TOKEN":
-          return {
-            ...prevState,
-            userToken: action.token,
-            isSignout: false,
-            isLoading: false,
-          };
-        case "SIGN_IN":
-          //console.log('action.user', action.user)
-          return {
-            ...prevState,
-            isSignout: false,
-            user: action.user,
-          };
-        case "SIGN_OUT":
-          return {
-            ...prevState,
-            isSignout: true,
-            userToken: null,
-            user: null,
-          };
-        case "FETCHING_URL_START":
-          console.log("FETCHING_URL_START", action);
+        case 'FETCHING_URL_START':
           return {
             ...prevState,
             isLoading: true,
-            info: undefined
+            info: undefined,
           };
 
-        case "FETCHING_URL_END":
-          console.log("FETCHING_URL_END", action);
-          let listTemp = [ ...prevState.lista ];
+        case 'FETCHING_URL_END':
+          listTemp = [...prevState.lista];
           if (action.payload.signo) {
-            listTemp = [ ...listTemp, action.payload ];
+            listTemp = [...listTemp, action.payload];
             AsyncStorage.setItem(LIST_NAME, JSON.stringify(listTemp));
           }
           return {
             ...prevState,
             isLoading: false,
             info: action.payload,
-            lista: listTemp
-          }
-          
-        case "LOAD_LIST":
+            lista: listTemp,
+          };
+
+        case 'LOAD_LIST':
           return {
             ...prevState,
-            lista: action.payload
+            lista: action.payload,
+          };
+        case 'START_SUGESTAO':
+          return {
+            ...prevState,
+            sugestao: [],
+          };
+        case 'END_SUGESTAO':
+          return {
+            ...prevState,
+            sugestao: action.payload,
+          };
+        case 'SELECT_INFO':
+          return {
+            ...prevState,
+            info: action.payload,
+          };
+        default:
+          return {
+            ...prevState,
           };
       }
     },
     {
       isLoading: false,
-      isSignout: true,
-      user: {},
-      userToken: null,
       info: undefined,
-      lista: []
+      lista: [],
+      sugestao: [],
     }
   );
-
-  const listenerUser = async (user) => {
-    if (!user) return;
-    console.log("onChangeUser", user);
-    const token = await user.getIdToken();
-    if (user) {
-      dispatch({ type: "SIGN_IN", user: user });
-    }
-  };
 
   /*
   React.useEffect(() => {
@@ -89,50 +76,36 @@ const AuthProvider = ({ children }) => {
   }, []);
   */
 
-
   const action = React.useMemo(() => ({
-    signIn: async ({ email, password }) => {
-      ///console.log('signIn:', email, password)
-/*
-      return firebase
-        .auth()
-        .signInWithEmailAndPassword(email, password)
-        .then(async (result) =>
-          dispatch({ type: "SIGN_IN", user: result.user })
-        );
-        */
+    sugestao: async (text) => {
+      dispatch({ type: 'START_SUGESTAO' });
+
+      sugestao(text).then((result) =>
+        dispatch({ type: 'END_SUGESTAO', payload: result })
+      );
     },
-    signOut: async () => {
-      /*return firebase
-        .auth()
-        .signOut()
-        .then(async () => dispatch({ type: "SIGN_OUT" }));*/
+
+    fechingURL: async (url) => {
+      dispatch({ type: 'FETCHING_URL_START' });
+
+      pesquisa(url).then((result) =>
+        dispatch({ type: 'FETCHING_URL_END', payload: result })
+      );
     },
-    signUp: async ({ email, password }) => {
-      /*return firebase
-        .auth()
-        .createUserWithEmailAndPassword(email, password)
-        .then((result) =>
-          dispatch({ type: "SIGN_IN", user: result.user })
-        );*/
-    },
-    fechingURL: async (url, token) => {
-      dispatch({ type: "FETCHING_URL_START" })
-      pesquisa(url)
-        .then(result => dispatch({ type: "FETCHING_URL_END", payload: result }))
-    },
-    
-    
-    loadList:async () => {
+
+    loadList: async () => {
       const item = await AsyncStorage.getItem(LIST_NAME);
       try {
-        dispatch({ type: "LOAD_LIST", payload: JSON.parse(item) })
-
+        dispatch({ type: 'LOAD_LIST', payload: JSON.parse(item) });
       } catch (error) {
         console.error(error);
       }
-    }
-
+    },
+    saveList: async (list) => {
+      await AsyncStorage.setItem(LIST_NAME, JSON.stringify(...list));
+      dispatch({ type: 'LOAD_LIST', payload: list });
+    },
+    selectInfo: async (info) => dispatch({ type: 'SELECT_INFO', payload: info }),
   }));
   return (
     <ContextAuth.Provider value={{ action, state }}>
@@ -140,5 +113,5 @@ const AuthProvider = ({ children }) => {
     </ContextAuth.Provider>
   );
 };
-
+export const useInfo = () => useContext(ContextAuth);
 export { AuthProvider };

@@ -1,7 +1,13 @@
-import * as React from 'react';
-import { useState, useContext, useEffect } from 'react';
+ import * as React from 'react';
+import { useState, useEffect } from 'react';
 
-import { View, StyleSheet, ActivityIndicator, FlatList } from 'react-native';
+import {
+  View,
+  StyleSheet,
+  ActivityIndicator,
+  FlatList,
+  TouchableOpacity,
+} from 'react-native';
 import {
   Input,
   Button,
@@ -11,54 +17,73 @@ import {
   Avatar,
   Card,
   Image,
-  ListItem
+  ListItem,
+  Icon,
 } from 'react-native-elements';
 
-import ContextAuth from "./InfoProvider";
+import { useInfo } from './InfoProvider';
 
 function ListScreen({ navigation, route }) {
-  const authContext = useContext(ContextAuth);
+  const authContext = useInfo();
 
   const [text, setText] = useState('');
   const [list, setList] = useState([]);
 
   useEffect(() => {
-    (async()=>{
-        await authContext.action.loadList();
-        setList(authContext.state.lista);
+    (async () => {
+      setList(authContext.state.lista);
     })();
+  }, [authContext.state.lista]);
 
-  }, []);
-
-  const onChangeText=(text)=>{
-    const lista = authContext.state.lista.filter((item)=>{
+  const onChangeText = (text) => {
+    setText(text);
+    const lista = authContext.state.lista.filter((item) => {
       try {
-        return item.info?.name?.toLowerCase().contains(text.toLowerCase());
+        return item.info?.name?.toLowerCase().includes(text.toLowerCase());
       } catch (error) {
         return false;
       }
     });
     setList(lista);
-    setText(text);
   };
 
+  const onClickDelete = async (item) => {
+    const tempList = authContext.state.lista.filter((i) => {
+      return !(i === item);
+    });
+
+    await authContext.action.saveList(tempList);
+  };
+
+  const onSelectItem=async(item)=>{
+    authContext.action.selectInfo(item);
+    navigation.navigate('result')
+  }
+
   return (
-    <View style={{flex:1}}>
-      <SearchBar onChangeText={onChangeText } value={text} />
-      <View >
+    <View style={{ flex: 1 }}>
+      <SearchBar onChangeText={onChangeText} value={text} />
+      <View>
         <FlatList
-          data={authContext.state.lista}
-          renderItem={({item, index})=>(
-          <ListItem key={index} bottomDivider>
-              <Avatar source={{ uri: item.imagem }} />
-              <ListItem.Content>
-                <ListItem.Title>{item.info?.name}</ListItem.Title>
-                <ListItem.Subtitle>{item.signo?.signo}</ListItem.Subtitle>
-              </ListItem.Content>
-            </ListItem>
+          data={list}
+          renderItem={({ item, index }) => (
+            <TouchableOpacity onPress={()=>onSelectItem(item)}>
+              <ListItem key={index} bottomDivider>
+                <Avatar source={{ uri: item.imagem }} />
+                <ListItem.Content>
+                  <ListItem.Title>{item.info?.name}</ListItem.Title>
+                  <ListItem.Subtitle>{item.signo?.signo}</ListItem.Subtitle>
+                </ListItem.Content>
+                <TouchableOpacity onPress={() => onClickDelete(item)}>
+                  <Icon name="delete" type="material" />
+                </TouchableOpacity>
+              </ListItem>
+            </TouchableOpacity>
           )}
-          keyExtractor={({index})=>(index)}
-      />
+          keyExtractor={(item, index) => {
+            return index;
+          }}
+        />
       </View>
     </View>
   );
