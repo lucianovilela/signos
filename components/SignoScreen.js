@@ -96,6 +96,17 @@ const InfoPessoal = () => {
   ) : (
     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
       <Text h3>No one was found 🤔 </Text>
+      {
+          <TouchableOpacity
+
+            onPress={() => {
+              WebBrowser.openBrowserAsync(authContext.state.info.url);
+            }}>
+            <Text style={{ color: '#ffffff' }}>info</Text>
+
+            <Icon name="web" type="material" />
+          </TouchableOpacity>
+        }
     </View>
   );
 };
@@ -132,7 +143,7 @@ const AutoCompleteList = ({ text, navigation }) => {
           </ListItem>
         )}
         keyExtractor={(res) => {
-          return `${res}`;
+          return `${res.title}`;
         }}
       />
     </View>

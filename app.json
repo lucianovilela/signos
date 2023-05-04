@@ -38,10 +38,15 @@
         "measurementId": "G-BBH4BS7VFD"
       }
     },
-    "description": ""
-
-  },    "react-native-google-mobile-ads": {
-  "android_app_id": "ca-app-pub-8251793476466194~2332715722",
-  "ios_app_id": "ca-app-pub-XXXXXXXXXXXXXX"
- }
+    "description": "",
+    "extra": {
+      "eas": {
+        "projectId": "e859e7be-7bb4-4db0-b8b7-6a762b6e593c"
+      }
+    }
+  },
+  "react-native-google-mobile-ads": {
+    "android_app_id": "ca-app-pub-8251793476466194~2332715722",
+    "ios_app_id": "ca-app-pub-XXXXXXXXXXXXXX"
+  }
 }

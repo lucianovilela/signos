@@ -65,16 +65,16 @@ const AuthProvider = ({ children }) => {
     }
   );
 
-  /*
+  
   React.useEffect(() => {
     // Fetch the token from storage then navigate to our appropriate place
     console.log("setting onChangeUser");
     const bootstrapAsync = async () => {
-      firebase.auth().onAuthStateChanged(listenerUser);
+      action.loadList();
     };
     bootstrapAsync();
   }, []);
-  */
+  
 
   const action = React.useMemo(() => ({
     sugestao: async (text) => {
