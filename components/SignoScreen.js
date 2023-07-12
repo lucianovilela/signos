@@ -115,16 +115,12 @@ const AutoCompleteList = ({ text, navigation }) => {
   const authContext = useInfo();
 
   useEffect(() => {
-    (async () => {
       if (text.length > 3) {
         authContext.action.sugestao(text);
       }
-    })();
   }, [text]);
   const getInfo = async (item) => {
     publishEvent('search', { search_term: item });
-
-    console.log('consulta', item);
     await authContext.action.fechingURL(item);
     navigation.navigate('result');
   };

@@ -1,11 +1,5 @@
-import { initializeApp } from 'firebase/app';
+import firebase  from 'firebase';
 
-
-
-import { getAnalytics, logEvent } from "firebase/analytics";
-
-
-// Initialize Firebase
 const firebaseConfig =  {
     "apiKey": "AIzaSyD03tfMzN7KtNrydxx73ScCDeuXhpDjZdg",
     "authDomain": "ehatdig.firebaseapp.com",
@@ -16,10 +10,9 @@ const firebaseConfig =  {
     "appId": "1:1029709563969:web:5d30e69e09ad2c75259ec0"
 };
 
-const app = initializeApp(firebaseConfig);
-const analytics =  getAnalytics(app); 
-// For more information on how to access Firebase in your project,
-// see the Firebase documentation: https://firebase.google.com/docs/web/setup#access-firebase
-const publishEvent=(obj, param)=>logEvent(analytics, obj, param);
+const app = firebase.initializeApp(firebaseConfig);
+const analytics =  firebase.analytics(); 
+
+const publishEvent=(obj, param)=>analytics.logEvent( obj, param);
 
 export  { app, analytics, publishEvent };

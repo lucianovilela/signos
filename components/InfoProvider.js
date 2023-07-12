@@ -7,7 +7,7 @@ export default ContextAuth;
 const LIST_NAME = 'signo.lista';
 
 const AuthProvider = ({ children }) => {
-  let listTemp=[];
+  let listTemp = [];
   const [state, dispatch] = React.useReducer(
     (prevState, action) => {
       switch (action.type) {
@@ -19,7 +19,7 @@ const AuthProvider = ({ children }) => {
           };
 
         case 'FETCHING_URL_END':
-          listTemp = [...prevState.lista];
+          listTemp = [...prevState.lista || []];
           if (action.payload.signo) {
             listTemp = [...listTemp, action.payload];
             AsyncStorage.setItem(LIST_NAME, JSON.stringify(listTemp));
@@ -65,16 +65,13 @@ const AuthProvider = ({ children }) => {
     }
   );
 
-  
+
   React.useEffect(() => {
-    // Fetch the token from storage then navigate to our appropriate place
-    console.log("setting onChangeUser");
-    const bootstrapAsync = async () => {
-      action.loadList();
-    };
-    bootstrapAsync();
+
+    action.loadList();
+
   }, []);
-  
+
 
   const action = React.useMemo(() => ({
     sugestao: async (text) => {
@@ -88,8 +85,10 @@ const AuthProvider = ({ children }) => {
     fechingURL: async (url) => {
       dispatch({ type: 'FETCHING_URL_START' });
 
-      pesquisa(url).then((result) =>
-        dispatch({ type: 'FETCHING_URL_END', payload: result })
+      pesquisa(url).then((result) => {
+        console.log(result);
+        dispatch({ type: 'FETCHING_URL_END', payload: result });
+      }
       );
     },
 
