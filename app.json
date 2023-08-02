@@ -20,7 +20,7 @@
       "supportsTablet": true
     },
     "android": {
-      "googleServicesFile": "./google-services.json",
+
       "config": {
         "googleMobileAdsAppId": "ca-app-pub-8251793476466194~2332715722"
       },
